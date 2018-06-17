@@ -7,8 +7,8 @@ Pytroch 0.4.0
 visdom 0.1.7
 
 运行示例：
-python -m visdom.server
-python main.py
+python -m visdom.server<br>
+python main.py<br>
 
 http://192.168.70.73:8097
 or
