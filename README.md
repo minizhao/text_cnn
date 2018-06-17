@@ -6,7 +6,7 @@ python3.6
 Pytroch 0.4.0
 visdom 0.1.7
 
-运行示例：
+运行示例：<br>
 python -m visdom.server<br>
 python main.py<br>
 
