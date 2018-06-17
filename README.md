@@ -14,4 +14,4 @@ http://192.168.70.73:8097
 or
 http://127.0.0.1:8097
 
-
+![Alt text](https://github.com/minzihao/NewsClient/text_cnn/master/image/t1.png)
