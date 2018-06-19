@@ -101,8 +101,27 @@ def eval(corpus_,criterion,optimizer):
     print('eval_mean_loss:{},eval_mean_acc:{}'.format(np.mean(loss_list),np.mean(acc_list)))
 
 #预测函数
-def pred(corpus_,criterion,optimizer):
-    pass
+def pred(corpus_,cnn,criterion,optimizer,pred_file=''):
+    pred_ids=[]
+    with open(pred_file) as f:
+        for line in f:
+            sent_words=line.split()
+            sent_ids=[corpus_.token2idx[x] for x in sent_words if x in corpus_.token2idx.keys()]
+            if len(sent_ids)<2000:
+                sent_ids=sent_ids+[corpus_.token2idx['<pad>']]*(2000-len(sent_ids))
+            sent_ids=sent_ids[:2000]
+            pred_ids.append(sent_ids)
+
+    pred_ids=np.array(pred_ids)
+    acc=[]
+    for idx in tqdm(range(0,len(pred_ids),batch_size)):
+        if cuda:
+            inp=Variable(torch.from_numpy(pred_ids[idx:idx+64])).cuda()
+            tag=Variable(torch.from_numpy(pred_ids[idx:idx+64])).cuda()
+        pred=cnn(inp)
+        _,pred_idx=torch.max(pred,1)
+        acc.append((sum(pred_idx.cpu().data.numpy()==1)*1./tag.size(0)))
+    print(np.mean(acc))
 
 
 
@@ -125,5 +144,6 @@ if __name__ == '__main__':
     else:
         cnn=torch.load('cnn.pt')
     optimizer=optim.Adam(cnn.parameters(),lr=0.0005)
-    train(corpus_,cnn,criterion,optimizer)
-    eval(corpus_,criterion,optimizer)
+    # train(corpus_,cnn,criterion,optimizer)
+    # eval(corpus_,criterion,optimizer)
+    pred(corpus_,cnn,criterion,optimizer,'0428_insurance_0.txt')
